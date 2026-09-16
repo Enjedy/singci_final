@@ -939,7 +939,22 @@ class _SignalementPageState extends State<SignalementPage> {
   }
 
   Future<void> submit() async {
-    String imagePaths = images.map((e) => e.path).join(";");
+    setState(() => isLoading = true);
+
+    // Envoi des photos vers Supabase Storage pour obtenir des URLs publiques
+    // (indispensable pour afficher les photos sur le web / l'admin).
+    List<String> uploadedUrls = [];
+    int failed = 0;
+    for (final img in images) {
+      final url = await SupabaseService.uploadImageToStorage(img.path);
+      if (url != null) {
+        uploadedUrls.add(url);
+      } else {
+        failed++;
+      }
+    }
+    String imagePaths = uploadedUrls.join(";");
+
     final probText = selectedProbleme.contains("Autre (précisez le problème)")
         ? autreController.text.trim()
         : selectedProbleme;
@@ -965,9 +980,14 @@ class _SignalementPageState extends State<SignalementPage> {
     await SupabaseService.insertSignalement(model);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Signalement envoyé et analysé par l'IA avec succès")),
-      );
+      setState(() => isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          failed == 0
+              ? "Signalement envoyé avec succès ✅"
+              : "Signalement envoyé, mais $failed photo(s) non uploadée(s) ⚠️",
+        ),
+      ));
       Navigator.pop(context);
     }
   }

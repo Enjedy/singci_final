@@ -35,3 +35,24 @@ CREATE TABLE IF NOT EXISTS signalement (
   user_id VARCHAR(255) NULL,
   user_pseudo VARCHAR(255) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Annonces publiées par l'administration (visibles par les citoyens)
+CREATE TABLE IF NOT EXISTS annonces (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  titre VARCHAR(255) NOT NULL,
+  description TEXT NULL,
+  image TEXT NULL,
+  auteur VARCHAR(100) DEFAULT 'Administration SignCi',
+  date_publication DATETIME DEFAULT CURRENT_TIMESTAMP,
+  likes INT DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Commentaires citoyens sur les annonces
+CREATE TABLE IF NOT EXISTS annonce_comments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  annonce_id INT NOT NULL,
+  pseudo VARCHAR(100) DEFAULT 'Citoyen SignCi',
+  contenu TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_annonce_comments FOREIGN KEY (annonce_id) REFERENCES annonces(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

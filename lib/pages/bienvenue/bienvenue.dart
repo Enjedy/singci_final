@@ -3,6 +3,7 @@ import 'package:signci/pages/user/carte.dart';
 import '../user/signal1.dart';
 import '../user/historique.dart';
 import '../user/parametre.dart';
+import '../user/annonce_page.dart';
 import '../user/messages/messages_page.dart';
 import '../user/agent_conseil/conseil_page.dart';
 
@@ -37,7 +38,7 @@ class _BienvenueState extends State<Bienvenue> {
     final pages = [
       buildAccueil(),
       const SignalementPage(),
-      const CarteSignalementPage(),
+      const AnnoncePage(),
       const HistoriquePage(),
       const ParametrePage(),
     ];
@@ -57,7 +58,7 @@ class _BienvenueState extends State<Bienvenue> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil"),
           BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: "Signaler"),
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: "Carte"),
+          BottomNavigationBarItem(icon: Icon(Icons.campaign), label: "Annonces"),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: "Historique"),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Paramètres"),
         ],
@@ -190,7 +191,9 @@ class _BienvenueState extends State<Bienvenue> {
               mainAxisSpacing: 15,
               childAspectRatio: 1.3,
               children: [
-                buildCard(Icons.map, "Carte & Zones Critiques", 2, color: const Color(0xFF0275D8)),
+                buildCardPush(
+                    const CarteSignalementPage(), "Carte & Zones Critiques", Icons.map,
+                    color: const Color(0xFF0275D8)),
                 buildCard(Icons.history, "Historique & Suivi", 3, color: const Color(0xFF701460)),
                 buildCardPush(MessagesPage(), "Messages & Alertes", Icons.chat, color: Colors.orange),
                 buildCardPush(const ConseilPage(), "Agent de conseil", Icons.smart_toy, color: const Color(0xFF154EA6)),
